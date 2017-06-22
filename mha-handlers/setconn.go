@@ -19,7 +19,8 @@ func SetConn(ip, port, username, password string) {
 			LockDelay: 10 * time.Second,
 			Name:      servicename,
 			Node:      hostname,
-			Checks:    []string{"serfHealth", "service:" + servicename},
+			Checks:    []string{"service:" + servicename},
+			TTL:       "10s",
 		}
 		//Create makes a new session. Providing a session entry can customize the session. It can also be nil to use defaults.
 		sessionvalue, _, err = session.Create(&sessionEntry, nil)
