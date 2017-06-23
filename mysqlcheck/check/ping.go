@@ -64,7 +64,7 @@ func TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string,
 				os.Exit(2)
 			}
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 }
 
@@ -122,7 +122,7 @@ func GetConsulConfig() *consulapi.Config {
 func GetClient(config *consulapi.Config) (*consulapi.Client, error) {
 	client, err := consulapi.NewClient(config)
 	if err != nil {
-		fmt.Println("Create consul-api client failed!", err)
+		fmt.Print(err)
 		return nil, err
 	}
 	return client, nil
@@ -137,17 +137,16 @@ func UpdateSessionTTL(servicename, ip string) {
 	session := client.Session()
 	node, _, err := session.Node(beego.AppConfig.String("hostname"), nil)
 	if err != nil {
-		fmt.Print("get session node failed:", err)
+		fmt.Print(err)
 		return
 	}
 	if node != nil {
 		for i := range node {
 			sessionentry, _, err := session.Renew(node[i].ID, nil)
 			if err != nil {
-				fmt.Println("session renew failed:", err)
+				fmt.Print(err)
 				return
 			}
-			fmt.Println("update session success,sessionentry:", sessionentry)
 		}
 
 	}
@@ -168,5 +167,5 @@ func getIPaddr(ip string) string {
 			return ip_port[i]
 		}
 	}
-	return "get ip failed"
+	return nil
 }
