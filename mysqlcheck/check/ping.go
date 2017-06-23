@@ -106,15 +106,15 @@ func TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string,
 				os.Exit(2)
 			}
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 }
 
-func GetConsulConfig(address string) *consulapi.Config {
+func GetConsulConfig() *consulapi.Config {
 	config := &consulapi.Config{
 		Datacenter: beego.AppConfig.String("datacenter"),
 		Token:      beego.AppConfig.String("token"),
-		Address:    address,
+		Address:    "127.0.0.1:8500",
 	}
 	return config
 }
@@ -129,34 +129,29 @@ func GetClient(config *consulapi.Config) (*consulapi.Client, error) {
 }
 
 func UpdateSessionTTL(servicename, ip string) {
-	address := ReadCaAddress()
-	config := GetConsulConfig(address)
+	config := GetConsulConfig()
 	client, err := GetClient(config)
 	if err != nil {
 		return
 	}
-	kv := client.KV()
-	//Get is used to lookup a single key
-	kvPair, _, err := kv.Get("cmha/service/"+servicename+"/db/leader", nil)
+	session := client.Session()
+	node, _, err := session.Node(beego.AppConfig.String("hostname"), nil)
 	if err != nil {
-		fmt.Println("Get leader failed!", err)
+		fmt.Print("get session node failed:", err)
 		return
 	}
-	if kvPair == nil {
-		fmt.Println("Not service leader,Please create!")
-		return
-	}
-	if string(kvPair.Value) == ip {
-		if kvPair.Session != "" {
-			session := client.Session()
-			sessionentry, _, err := session.Renew(kvPair.Session, nil)
+	if node != nil {
+		for i := range node {
+			sessionentry, _, err := session.Renew(node[i].ID, nil)
 			if err != nil {
 				fmt.Println("session renew failed:", err)
 				return
 			}
 			fmt.Println("update session success,sessionentry:", sessionentry)
 		}
+
 	}
+
 }
 
 func ReadCaAddress() string {
@@ -164,4 +159,14 @@ func ReadCaAddress() string {
 	consul_agent_port := beego.AppConfig.String("consul_agent_port")
 	address := consul_agent_ip + ":" + consul_agent_port
 	return address
+}
+
+func getIPaddr(ip string) string {
+	ip_port := strings.Split(ip, ":")
+	for i := range ip_port {
+		if i == 0 {
+			return ip_port[i]
+		}
+	}
+	return "get ip failed"
 }

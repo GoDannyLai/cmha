@@ -9,25 +9,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func CheckMysqlHealth(user, password, ip, port, defaultDb, timeout string,checktime int) int {
+func CheckMysqlHealth(user, password, ip, port, defaultDb, timeout string, checktime int) int {
 	var MYSQL_OK int
 	db, err := Conn(user, password, ip, port, defaultDb, timeout)
-	if err != nil {
-		if checktime == 1{
-			fmt.Print(err)
-		}
-		MYSQL_OK = 1
-		return MYSQL_OK
-	}
-	err = SetMysql(db, "set sql_log_bin=0;")
-	if err != nil {
-		if checktime == 1{
-			fmt.Print(err)
-		}
-		MYSQL_OK = 1
-		return MYSQL_OK
-	}
-	err = SetMysql(db, "set innodb_lock_wait_timeout=3;")
 	if err != nil {
 		if checktime == 1 {
 			fmt.Print(err)
@@ -35,9 +19,25 @@ func CheckMysqlHealth(user, password, ip, port, defaultDb, timeout string,checkt
 		MYSQL_OK = 1
 		return MYSQL_OK
 	}
-	err = SetMysql(db, "set lock_wait_timeout=3;")
+	err = SetMysql(db, "set sql_log_bin=0;")
 	if err != nil {
-		if checktime == 1{
+		if checktime == 1 {
+			fmt.Print(err)
+		}
+		MYSQL_OK = 1
+		return MYSQL_OK
+	}
+	err = SetMysql(db, "set innodb_lock_wait_timeout=2;")
+	if err != nil {
+		if checktime == 1 {
+			fmt.Print(err)
+		}
+		MYSQL_OK = 1
+		return MYSQL_OK
+	}
+	err = SetMysql(db, "set lock_wait_timeout=2;")
+	if err != nil {
+		if checktime == 1 {
 			fmt.Print(err)
 		}
 		MYSQL_OK = 1
@@ -45,7 +45,7 @@ func CheckMysqlHealth(user, password, ip, port, defaultDb, timeout string,checkt
 	}
 	tx, err := Tx(db)
 	if err != nil {
-		if checktime == 1{ 
+		if checktime == 1 {
 			fmt.Print(err)
 		}
 		MYSQL_OK = 1
@@ -53,7 +53,7 @@ func CheckMysqlHealth(user, password, ip, port, defaultDb, timeout string,checkt
 	}
 	err = MysqlOperation(tx)
 	if err != nil {
-		if checktime == 1{
+		if checktime == 1 {
 			fmt.Print(err)
 		}
 		MYSQL_OK = 1
@@ -63,11 +63,11 @@ func CheckMysqlHealth(user, password, ip, port, defaultDb, timeout string,checkt
 	return MYSQL_OK
 }
 
-func SelectCheckMysqlHealth(user, password, ip, port, defaultDb, timeout string,checktime int) int {
+func SelectCheckMysqlHealth(user, password, ip, port, defaultDb, timeout string, checktime int) int {
 	var MYSQL_OK int
 	db, err := Conn(user, password, ip, port, defaultDb, timeout)
 	if err != nil {
-		if checktime == 1{
+		if checktime == 1 {
 			fmt.Print(err)
 		}
 		MYSQL_OK = 1
