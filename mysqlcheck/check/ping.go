@@ -142,7 +142,7 @@ func UpdateSessionTTL(servicename, ip string) {
 	}
 	if node != nil {
 		for i := range node {
-			sessionentry, _, err := session.Renew(node[i].ID, nil)
+			_, _, err := session.Renew(node[i].ID, nil)
 			if err != nil {
 				fmt.Print(err)
 				return
