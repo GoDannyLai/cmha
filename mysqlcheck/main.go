@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/upmio/mysqlcheck/check"
+	"github.com/upmio/cmha/mysqlcheck/check"
 )
 
 var (
