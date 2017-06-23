@@ -167,5 +167,5 @@ func getIPaddr(ip string) string {
 			return ip_port[i]
 		}
 	}
-	return nil
+	return ""
 }
