@@ -8,17 +8,16 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
-
 	consulapi "github.com/hashicorp/consul/api"
 )
 
-func IsPingType(user, password string) {
+func IsPingType(user, password string, cilent *consulapi.Client) {
 	host, port, checktime_string, timeout, defaultDb, ping_type := GetConfig()
 	servicename := beego.AppConfig.String("servicename")
 	if ping_type == "select,replication" || ping_type == "select" {
-		TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename)
+		TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename, cilent)
 	} else if ping_type == "update,replication" || ping_type == "update" {
-		TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename)
+		TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename, cilent)
 	} else {
 		fmt.Print("Configuration error")
 		os.Exit(2)
@@ -26,7 +25,7 @@ func IsPingType(user, password string) {
 
 }
 
-func TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename string) {
+func TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename string, client *consulapi.Client) {
 	checktime, _ := strconv.Atoi(checktime_string)
 	for {
 		if checktime == 0 {
@@ -43,20 +42,20 @@ func TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string,
 					}
 					if isyes == "Yes" {
 						fmt.Print("check ok")
-						UpdateSessionTTL(servicename, host)
+						UpdateSessionTTL(servicename, host, client)
 						os.Exit(0)
 					} else if isyes == "noreplication" {
 						fmt.Print("replication is not configured")
-						UpdateSessionTTL(servicename, host)
+						UpdateSessionTTL(servicename, host, client)
 						os.Exit(1)
 					} else {
 						fmt.Print("check replication io_thread fail:", isyes)
-						UpdateSessionTTL(servicename, host)
+						UpdateSessionTTL(servicename, host, client)
 						os.Exit(1)
 					}
 				} else {
 					fmt.Print("check ok")
-					UpdateSessionTTL(servicename, host)
+					UpdateSessionTTL(servicename, host, client)
 					os.Exit(0)
 				}
 			}
@@ -68,7 +67,7 @@ func TrySelectCheckTime(user, password, host, port, defaultDb, checktime_string,
 	}
 }
 
-func TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename string) {
+func TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string, ping_type, timeout, servicename string, client *consulapi.Client) {
 	checktime, _ := strconv.Atoi(checktime_string)
 	for {
 		if checktime == 0 {
@@ -85,20 +84,20 @@ func TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string,
 					}
 					if isyes == "Yes" {
 						fmt.Print("check ok")
-						UpdateSessionTTL(servicename, host)
+						UpdateSessionTTL(servicename, host, client)
 						os.Exit(0)
 					} else if isyes == "noreplication" {
 						fmt.Print("replication is not configured")
-						UpdateSessionTTL(servicename, host)
+						UpdateSessionTTL(servicename, host, client)
 						os.Exit(1)
 					} else {
 						fmt.Print("check replication io_thread fail:", isyes)
-						UpdateSessionTTL(servicename, host)
+						UpdateSessionTTL(servicename, host, client)
 						os.Exit(1)
 					}
 				} else {
 					fmt.Print("check ok")
-					UpdateSessionTTL(servicename, host)
+					UpdateSessionTTL(servicename, host, client)
 					os.Exit(0)
 				}
 			}
@@ -110,30 +109,7 @@ func TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string,
 	}
 }
 
-func GetConsulConfig() *consulapi.Config {
-	config := &consulapi.Config{
-		Datacenter: beego.AppConfig.String("datacenter"),
-		Token:      beego.AppConfig.String("token"),
-		Address:    "127.0.0.1:8500",
-	}
-	return config
-}
-
-func GetClient(config *consulapi.Config) (*consulapi.Client, error) {
-	client, err := consulapi.NewClient(config)
-	if err != nil {
-		fmt.Print(err)
-		return nil, err
-	}
-	return client, nil
-}
-
-func UpdateSessionTTL(servicename, ip string) {
-	config := GetConsulConfig()
-	client, err := GetClient(config)
-	if err != nil {
-		return
-	}
+func UpdateSessionTTL(servicename, ip string, client *consulapi.Client) {
 	session := client.Session()
 	node, _, err := session.Node(beego.AppConfig.String("hostname"), nil)
 	if err != nil {
@@ -142,15 +118,33 @@ func UpdateSessionTTL(servicename, ip string) {
 	}
 	if node != nil {
 		for i := range node {
-			_, _, err := session.Renew(node[i].ID, nil)
+			for j := 0; j < 3; j++ {
+				err := renewSession(node[i].ID, session)
+				if err != nil {
+					fmt.Print(err)
+					continue
+				}
+				break
+			}
+
+			/*_, _, err := session.Renew(node[i].ID, nil)
 			if err != nil {
 				fmt.Print(err)
 				return
-			}
+			}*/
 		}
 
 	}
 
+}
+
+func renewSession(id string, session *consulapi.Session) error {
+	_, _, err := session.Renew(id, nil)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	return nil
 }
 
 func ReadCaAddress() string {
