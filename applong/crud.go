@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	//	"bytes"
 	"fmt"
+
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 	//"gopkg.in/yaml.v2"
@@ -30,6 +31,12 @@ func Crud() error {
 			fmt.Println("db closing")
 			db.Close()
 		}()
+		err := db.Ping()
+		if err != nil {
+			beego.Error("ping() database failure!", err)
+			db = Conn()
+		}
+		beego.Info("ping() database success!")
 	}
 
 	affairs := beego.AppConfig.String("affairs")

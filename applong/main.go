@@ -3,9 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/astaxie/beego"
 	"os"
 	"os/signal"
+
+	"github.com/astaxie/beego"
 	//"time"
 	//"sync"
 	"syscall"
@@ -25,7 +26,7 @@ func main() {
 	args := os.Args[1:]
 	for _, arg := range args {
 		if arg == "-v" || arg == "--version" {
-			beego.Info("version 0.2.0")
+			beego.Info("version 0.3.0")
 			return
 		}
 	}
@@ -41,17 +42,16 @@ func main() {
 			fmt.Println("db closing")
 			db.Close()
 		}()
+		err = db.Ping()
+		if err != nil {
+			beego.Error("ping() database failure!", err)
+			db = Conn()
+		}
+		beego.Info("ping() database success!")
 	}
 	go func() {
 		for {
 			//beego.Debug("No. ---> ", i+1)
-			err = db.Ping()
-			if err != nil {
-				beego.Error("ping() database failure!", err)
-				db = Conn()
-				continue
-			}
-			beego.Info("ping() database success!")
 			err := Crud()
 			if err != nil {
 				beego.Error("Failure to obtain master information:", err)
