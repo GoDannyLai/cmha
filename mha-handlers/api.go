@@ -25,7 +25,6 @@ var logkey string
 var leader string
 var err error
 
-
 func SessionAndChecks() {
 	logger.Println("[I] MHA Handler Triggered")
 	logvalue, timestamp := GetLogValue(triggered)
@@ -208,6 +207,22 @@ func SessionAndChecks() {
 		UploadLog(logkey, logvalue)
 		return
 	} else {
+		Pair, _, err := kv.Get(leader, nil)
+		if err != nil {
+			logger.Println("[E] Get and check current service leader from CS failed!", err)
+			timestamp := time.Now().Unix()
+			logvalue = logvalue + "|" + strconv.FormatInt(timestamp, 10) + current_check_failed + "{{" + fmt.Sprintf("%s", err)
+			UploadLog(logkey, logvalue)
+			return
+		}
+		if Pair.Session != "" {
+			logger.Println("[I] Leader exist!")
+			logvalue, timestamp = AddLogValue(leader_exist, logvalue)
+			logger.Println("[I] Give up leader election")
+			logvalue, timestamp = AddLogValue(give_election, logvalue)
+			UploadLog(logkey, logvalue)
+			return
+		}
 		updatevalue := consulapi.KVPair{
 			Key:   leader,
 			Value: []byte(""),
@@ -292,7 +307,6 @@ func SessionAndChecks() {
 		_, _ = IsStatus(healthpair, ip)
 	}
 }
-
 
 func SetRead_only(username, password, port string, value int) {
 	var timestamp int64
