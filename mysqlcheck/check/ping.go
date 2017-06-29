@@ -111,14 +111,20 @@ func TryUpdateCheckTime(user, password, host, port, defaultDb, checktime_string,
 
 func UpdateSessionTTL(servicename, ip string, client *consulapi.Client) {
 	session := client.Session()
-	node, _, err := session.Node(beego.AppConfig.String("hostname"), nil)
-	if err != nil {
-		fmt.Print(err)
-		return
+	var node []*consulapi.SessionEntry
+	var err error
+	for j := 0; j < 15; j++ {
+		node, _, err = session.Node(beego.AppConfig.String("hostname"), nil)
+		if err != nil {
+			fmt.Print(err)
+			continue
+		}
+		break
 	}
+
 	if node != nil {
 		for i := range node {
-			for j := 0; j < 3; j++ {
+			for j := 0; j < 15; j++ {
 				err := renewSession(node[i].ID, session)
 				if err != nil {
 					fmt.Print(err)
