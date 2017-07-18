@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func CheckDeployment(args ...string) error {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("deploymnet.go Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 	catalog := client.Catalog()
 	services, _, err := catalog.Services(nil)
 	kv := client.KV()

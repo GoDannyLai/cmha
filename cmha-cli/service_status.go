@@ -6,7 +6,7 @@ import (
 
 	"strings"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func Service_Status(args ...string) error {
@@ -16,12 +16,12 @@ func Service_Status(args ...string) error {
 		return err
 	}
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	var (
 		leaderip string
@@ -391,13 +391,13 @@ func getReplErrCount(_node_name, servicename string) (string, error) {
 
 	_key_repl_err_counter := "cmha/service/" + servicename + "/db/repl_err_counter/" + _node_name
 
-	_client, err := cliconfig.Consul_Client_Init()
+/*	_client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		return "", err
-	}
+	}*/
 
-	_kv := _client.KV()
+	_kv := client.KV()
 
 	if _repl_err_counter, _, err := _kv.Get(_key_repl_err_counter, nil); err != nil {
 

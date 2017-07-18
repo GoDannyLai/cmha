@@ -6,17 +6,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 //show all alerts log
 func show_all_alerts(_service string, _list string) error {
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	kv := client.KV()
 	var _key string
@@ -104,12 +104,12 @@ func show_all_alerts(_service string, _list string) error {
 
 func show_alerts_detail(service string, _timestamp ...string) error {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	kv := client.KV()
 
@@ -164,12 +164,12 @@ func show_alerts(service string, _from string, _to string) error {
 
 	time_from, time_to = int64_arrange(time_from, time_to)
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	kv := client.KV()
 	var _key string
@@ -211,16 +211,20 @@ func show_alerts(service string, _from string, _to string) error {
 }
 
 func AlertBoot(service string) error {
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	kv := client.KV()
 	key := "cmha/service/" + service + "/alerts/alert_boot"
 	kvpair, _,err := kv.Get(key, nil)
+	if err != nil {
+		fmt.Println("get kv failure!",err)
+		return err
+	}
 	if string(kvpair.Value) != "" {
 		fmt.Println(string(kvpair.Value))
 	} else {

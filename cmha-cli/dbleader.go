@@ -3,18 +3,18 @@ package main
 import (
 	"fmt"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func DbLeader(args ...string) error {
 	if len(args) > 0 {
 
-		client, err := cliconfig.Consul_Client_Init()
+/*		client, err := cliconfig.Consul_Client_Init()
 
 		if err != nil {
 			fmt.Println("dbleader Create consul-api client failure!", err)
 			return err
-		}
+		}*/
 		kv := client.KV()
 		keys, _, err := kv.Keys("", "", nil)
 		if err != nil {
@@ -55,12 +55,12 @@ func DbLeader(args ...string) error {
 		return nil
 	}
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("dbleader Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 	kv := client.KV()
 	catalog := client.Catalog()
 	services, _, err := catalog.Services(nil)

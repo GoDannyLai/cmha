@@ -5,17 +5,17 @@ import (
 	"strings"
 
 	"github.com/ryanuber/columnize"
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func Chap(args ...string) error {
 	if len(args) > 0 {
-		client, err := cliconfig.Consul_Client_Init()
+/*		client, err := cliconfig.Consul_Client_Init()
 
 		if err != nil {
 			fmt.Println("chap Create consul-api client failure!", err)
 			return err
-		}
+		}*/
 		health := client.Health()
 		healthservice, _, err := health.Service(args[0], "", false, nil)
 		if err != nil {
@@ -90,11 +90,11 @@ func Chap(args ...string) error {
 
 	}
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 	if err != nil {
 		fmt.Println("chap Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	catalog := client.Catalog()
 	health := client.Health()

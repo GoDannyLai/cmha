@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func CmhaLeader(args ...string) error {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("leader.go Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 	status := client.Status()
 	leader, err := status.Leader()
 	if err != nil {

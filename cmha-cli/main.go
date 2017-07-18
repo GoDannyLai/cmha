@@ -8,7 +8,9 @@ import (
 	"unsafe"
 
 	"github.com/0-T-0/go.linenoise"
-	"github.com/upmio/cmha-cli/cliconfig"
+	"github.com/upmio/cmha/cmha-cli/cliconfig"
+	consulapi "github.com/hashicorp/consul/api"
+	"github.com/astaxie/beego"
 )
 
 var (
@@ -20,6 +22,8 @@ var (
 	service_name            = "CS"
 	cmdline                 = ""
 	nodes_data              [2][3]string
+	client 	*consulapi.Client
+	err error
 )
 
 func welcomebanner() {
@@ -66,8 +70,8 @@ func main() {
 			return
 		}
 	}
-
-	client, err := cliconfig.Consul_Client_Init()
+	ip := beego.AppConfig.String("cmha-server-ip")
+	client, err = cliconfig.Consul_Client_Init(ip)
 	if err != nil {
 		fmt.Println(" Create consul-api client failure!", err)
 		return
@@ -123,6 +127,27 @@ func main() {
 
 		case "help", "\\h", "\\?":
 			helpCMD(fields[1:])
+		case "cs","\\cs":
+			if len(fields) < 2 {
+				help("cs")
+				continue
+			}
+			switch fields[1] {
+				case "list":
+				showlist()
+			}
+		case "connect","\\cn":
+			if len(fields) < 2 {
+                                help("connect")
+                                continue
+                        }else {
+				fmt.Println(fields[1])
+				client, err = cliconfig.Consul_Client_Init(fields[1])
+        			if err != nil {
+                			fmt.Println(" Create consul-api client failure!", err)
+                			return
+        			}			
+			}
 		case "show", "\\s":
 
 			if len(fields) < 2 {

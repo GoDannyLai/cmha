@@ -18,10 +18,10 @@ func GetPassword() string {
 	return rt
 }
 
-func Consul_Client_Init() (*consulapi.Client, error) {
+func Consul_Client_Init(ip string) (*consulapi.Client, error) {
 
 
-	ip := beego.AppConfig.String("cmha-server-ip")
+//	ip := beego.AppConfig.String("cmha-server-ip")
 	port := beego.AppConfig.String("cmha-server-port")
 	datacenter := beego.AppConfig.String("cmha-datacenter")
 	token := beego.AppConfig.String("cmha-token")

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 	"errors"
 	"strconv"
 	"strings"
@@ -69,12 +69,12 @@ func show_logs(service string, node string, logtype string, _from string, _to st
 
 	time_from, time_to = int64_arrange(time_from, time_to)
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return
-	}
+	}*/
 
 	kv := client.KV()
 
@@ -112,12 +112,12 @@ func show_logs(service string, node string, logtype string, _from string, _to st
 }
 
 func show_all_log(service string, node string, logtype string) {
-	client, err := cliconfig.Consul_Client_Init()
+	/*client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return
-	}
+	}*/
 
 	kv := client.KV()
 
@@ -159,12 +159,12 @@ func show_all_log(service string, node string, logtype string) {
 
 func show_log_detail(service string, node string, logtype string, _timestamp ...string) {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return
-	}
+	}*/
 
 	kv := client.KV()
 

@@ -158,12 +158,12 @@ func SetSlaveStop(args ...string) error {
 func Setmonitorkv(args ...string) error {
 	if len(args) >= 3 {
 
-		client, err := cliconfig.Consul_Client_Init()
+/*		client, err := cliconfig.Consul_Client_Init()
 
 		if err != nil {
 			fmt.Println("Setmonitorkv Create consul-api client failure!", err)
 			return err
-		}
+		}*/
 		kv := client.KV()
 		var put string
 		var key string

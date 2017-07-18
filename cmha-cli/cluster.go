@@ -5,17 +5,17 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func Cluster(args ...string) error {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 
 	status := client.Status()
 	peers, err := status.Peers()

@@ -17,11 +17,11 @@ var kv *consulapi.KV
 func Db(args ...string) error {
 	if len(args) > 0 {
 
-		client, err := cliconfig.Consul_Client_Init()
+/*		client, err := cliconfig.Consul_Client_Init()
 		if err != nil {
 			fmt.Println("db Create consul-api client failure!", err)
 			return err
-		}
+		}*/
 		health := client.Health()
 		healthservice, _, err := health.Service(args[0], "", false, nil)
 		if err != nil {
@@ -357,12 +357,12 @@ func Db(args ...string) error {
 		return nil
 	}
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("db Create consul-api client failure!", err)
 		return err
-	}
+	}*/
 	catalog := client.Catalog()
 	health := client.Health()
 	services, _, err := catalog.Services(nil)

@@ -3,19 +3,19 @@ package main
 import (
 	"fmt"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 	"sort"
 	"strings"
 )
 
 func Status(args ...string) error {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("Error: status.go Create consul-api client is failure!", err)
 		return err
-	}
+	}*/
 
 	status := client.Status()
 

@@ -16,6 +16,8 @@ func help(args ...string) {
 			"clear | (\\c) | Clear the current input statement.",
 			"exit | (\\q) | Exit cmha-cli. Same as quit.",
 			"help | (\\h) | Display this help.",
+			"cs   | (\\cs)| Display this cs",
+			"connect | (\\cn) | connect consul cluster",
 			"purge | (\\p) | Clear log .",
 			"quit | (\\q) | Quit cmha-cli.",
 			"show | (\\s) | Show cluster status or cluster detail.Takes 'status' or 'cluster' as argument.",
@@ -34,6 +36,16 @@ func help(args ...string) {
 
 	} else if len(args) == 1 {
 		switch args[0] {
+		case "cs":
+			help_cs := []string{
+				"cs list | | consul server ip address",
+			}
+			helpFormat(args[0], help_cs)
+		case "connect": 
+			help_connect := []string{
+				"connect | <csip> | connect consul cluster | e.g. connect 192.168.2.1",
+			}
+			helpFormat(args[0], help_connect)
 		case "show":
 
 			help_show := []string{
@@ -162,6 +174,8 @@ func default_help() {
 
 	help_help := []string{
 		"help show  | display show usage.",
+		"help cs  | display cs usage.",
+		"help connect | display connect usage.", 
 		"help use  | display use usage.",
 		"help set  | display set usage.",
 		"help purge  | purge log.",

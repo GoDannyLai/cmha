@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 )
 
 func Use_service(args ...string) (bool, error) {
@@ -14,12 +14,12 @@ func Use_service(args ...string) (bool, error) {
 		return false, err
 	}
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return false, err
-	}
+	}*/
 
 	status := client.Status()
 	peers, err := status.Peers()
@@ -82,11 +82,11 @@ func Use_service(args ...string) (bool, error) {
 
 func get_Nodes_Info(servicename string) ([][]string, error) {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
 	health := client.Health()
 

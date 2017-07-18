@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/upmio/cmha-cli/cliconfig"
+//	"github.com/upmio/cmha-cli/cliconfig"
 	"strings"
 	"errors"
 )
@@ -106,12 +106,12 @@ func purge_logs(service string, node string, logtype string, _from string, _to s
 
 	time_from, time_to = int64_arrange(time_from, time_to)
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return
-	}
+	}*/
 
 	kv := client.KV()
 	var _key string
@@ -157,12 +157,12 @@ func purge_logs(service string, node string, logtype string, _from string, _to s
 
 func purge_all_logs(service string, node string, logtype string) {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return
-	}
+	}*/
 
 	kv := client.KV()
 		
@@ -200,12 +200,12 @@ func purge_all_logs(service string, node string, logtype string) {
 
 func purge_a_log(service string, node string, logtype string, _timestamp string) {
 
-	client, err := cliconfig.Consul_Client_Init()
+/*	client, err := cliconfig.Consul_Client_Init()
 
 	if err != nil {
 		fmt.Println("cluster Create consul-api client failure!", err)
 		return
-	}
+	}*/
 
 	kv := client.KV()
 
